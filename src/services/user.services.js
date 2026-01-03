@@ -37,18 +37,19 @@ const findUserById = async (userId) => {
 
 function normilizeUser(user) {
   return {
+    userId: user.userId,
     email: user.email,
   };
 }
 
 const updateNameService = (id, name) =>
-  User.update({ name }, { where: { id } });
+  User.update({ name }, { where: { userId: id } });
 
 const updateEmailService = (id, email) =>
-  User.update({ email }, { where: { id } });
+  User.update({ email }, { where: { userId: id } });
 
 const updatePasswordService = (id, password) =>
-  User.update({ password }, { where: { id } });
+  User.update({ password }, { where: { userId: id } });
 
 export const userServices = {
   registerUser,

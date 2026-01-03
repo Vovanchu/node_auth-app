@@ -91,13 +91,14 @@ const activateUser = async (req, res) => {
   user.activationToken = null;
   await user.save();
   res.send(user);
-  res.redirect('/login');
+  res.redirect('/profile');
 };
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
+    res.sendStatus(400);
     res.send({ message: 'All fields are required' });
 
     return;
@@ -126,10 +127,11 @@ const loginUser = async (req, res) => {
   }
 
   generateTokens(res, user);
+  res.redirect('/profile');
 };
 
 const refresh = (req, res) => {
-  const { refreshToken } = req.cookies.refreshToken;
+  const { refreshToken } = req.cookies;
 
   const user = jwtService.verifyRefresh(refreshToken);
 
@@ -147,7 +149,7 @@ const generateTokens = async (res, user) => {
   const accessToken = jwtService.sign(normilizeUser);
   const refreshToken = jwtService.signRefresh(normilizeUser);
 
-  res.cookies('refreshToken', refreshToken, {
+  res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     secure: true,
     maxAge: 30 * 24 * 60 * 60 * 1000,
@@ -160,8 +162,7 @@ const generateTokens = async (res, user) => {
 };
 
 const logout = (req, res) => {
-  res.clearCookie('refreshToken');
-  res.redirect('/login');
+  res.clearCookie('refreshToken').redirect('/login');
 };
 
 const forgot = async (req, res) => {

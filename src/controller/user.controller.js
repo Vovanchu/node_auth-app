@@ -1,6 +1,6 @@
-import { User } from '../models/User.model';
-import { userServices } from '../services/user.services';
-import { emailServices } from '../services/email.services';
+import { User } from './models/User.model.js';
+import { userServices } from '../services/user.services.js';
+import { emailServices } from '../services/email.services.js';
 import bcrypt from 'bcrypt';
 
 const getAllUsers = async (req, res) => {
@@ -19,7 +19,7 @@ const getUserById = async (req, res) => {
 
 const updateName = async (req, res) => {
   try {
-    const { id } = req.params;
+    const userId = req.user.id;
     const { name } = req.body;
 
     if (!name || !name.trim()) {
@@ -28,7 +28,7 @@ const updateName = async (req, res) => {
       return;
     }
 
-    const user = await userServices.updateNameService(id, name);
+    const user = await userServices.updateNameService(userId, name);
 
     res.send(user);
   } catch (error) {
@@ -62,20 +62,30 @@ const updatePassword = async (req, res) => {
 };
 
 const updateEmail = async (req, res) => {
-  const { password, newEmail } = req.body;
+  const { password, newEmail, confirmation } = req.body;
   const userId = req.user.id;
 
+  if (!newEmail || !confirmation) {
+    res
+      .status(400)
+      .json({ message: 'New email and confirmation are required' });
+    return;
+  }
+
+  if (newEmail !== confirmation) {
+    res.status(400).json({ message: 'Emails do not match' });
+    return;
+  }
+
   const user = await userServices.findUserById(userId);
-  const isValid = await bcrypt.compare(password, user.password);
 
-  if (!isValid) {
+  const isValidPassword = await bcrypt.compare(password, user.password);
+  if (!isValidPassword) {
     res.status(401).json({ message: 'Invalid password' });
-
     return;
   }
 
   const oldEmail = user.email;
-
   user.email = newEmail;
 
   await user.save();

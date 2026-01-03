@@ -28,7 +28,8 @@ export const User = client.define(
       field: 'activation_token',
     },
     resetToken: {
-      type: DataTypes.UUID,
+      type: DataTypes.STRING,
+      field: 'reset_token',
     },
   },
   {

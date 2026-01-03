@@ -1,13 +1,13 @@
 import express from 'express';
 import authRouter from './router/auth.router.js';
 import userRouter from './router/user.router.js';
-import cokieParser from 'cookie-parser';
+import cookieParser from 'cookieParser';
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(cokieParser());
+app.use(cookieParser());
 
 app.use('/', authRouter);
 app.use('/user', userRouter);

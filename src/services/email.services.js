@@ -38,7 +38,7 @@ function sendResetPasswordEmail(email, token) {
     <a href="${href}">${href}</a>
   `;
 
-  return sendEmail({ email, html, subject: 'Reset Your Password' });
+  return sendEmail(email, 'Reset Your Password', html);
 }
 
 async function sendEmailChangedNotification(oldEmail, newEmail) {
