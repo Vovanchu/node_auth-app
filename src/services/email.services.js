@@ -31,7 +31,7 @@ function sendActivationEmail(email, token) {
 }
 
 function sendResetPasswordEmail(email, token) {
-  const href = `${process.env.CLIENT_HOST}/password-reset/${email}/${token}`;
+  const href = `${process.env.CLIENT_HOST}/password-reset/${token}`;
   const html = `
     <h1>Password Reset</h1>
     <p>Click the link below to reset your password:</p>

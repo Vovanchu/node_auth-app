@@ -90,7 +90,7 @@ const activateUser = async (req, res) => {
 
   user.activationToken = null;
   await user.save();
-  res.send(user);
+
   res.redirect('/profile');
 };
 
@@ -98,10 +98,7 @@ const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    res.sendStatus(400);
-    res.send({ message: 'All fields are required' });
-
-    return;
+    return res.status(400).send({ message: 'All fields are required' });
   }
 
   const user = await userServices.findUser(email);
@@ -126,7 +123,7 @@ const loginUser = async (req, res) => {
     return;
   }
 
-  generateTokens(res, user);
+  await generateTokens(res, user);
   res.redirect('/profile');
 };
 
